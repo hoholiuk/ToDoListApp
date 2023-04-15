@@ -1,0 +1,33 @@
+﻿@model CategoryViewModel
+
+@{
+    ViewData["Title"] = " - Categories";
+    var categoriesList = Model.CategoriesList;
+}
+
+<form method="post" asp-action="Index" class="d-flex flex-column justify-content-center align-items-center mb-4">
+    <span asp-validation-for="CategoryInputViewModel.Name" class="text-danger"></span>
+    <input type="text" asp-for="CategoryInputViewModel.Name" class="form-control w-50 mt-4" placeholder="Enter a category name here" />
+</form>
+
+@if (categoriesList.Count() > 0)
+{
+    <h2 class="d-flex justify-content-center mb-4">Categories</h2>
+    <table class="table col-6">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in categoriesList)
+            {
+                <tr>
+                    <td class="col-11">@item.Name</td>
+                    <td class="col-1"><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
