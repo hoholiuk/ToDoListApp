@@ -7,7 +7,7 @@ namespace MSQL.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private string connectionString = "Data Source=GBVPC; Initial Catalog=ToDoList; Integrated Security=True; TrustServerCertificate=True";
+        private string connectionString = "Data Source=HBV; Initial Catalog=ToDoList; Integrated Security=True; TrustServerCertificate=True";
 
         public IEnumerable<CategoryModel> GetCategoriesList()
         {

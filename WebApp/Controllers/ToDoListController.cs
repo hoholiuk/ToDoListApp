@@ -55,7 +55,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public IActionResult GetDataForUpdate(int id)
         {
             TaskModel task = taskRepository.GetById(id);
 
@@ -66,6 +66,7 @@ namespace WebApp.Controllers
 
             TaskInputViewModel taskInputViewModel = new TaskInputViewModel()
             {
+                Id = id,
                 Title = task.Title,
                 DueDate = task.DueDate,
                 CategoryId = task.CategoryId
@@ -74,8 +75,23 @@ namespace WebApp.Controllers
             ToDoListViewModel toDoListViewModel = GetToDoListViewModel();
             toDoListViewModel.TaskInputViewModel = taskInputViewModel;
 
-            taskRepository.Delete(id);
             return View("Index", toDoListViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Update(TaskInputViewModel taskInputViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                ToDoListViewModel toDoListViewModel = GetToDoListViewModel();
+                toDoListViewModel.TaskInputViewModel = taskInputViewModel;
+                return View("Index", toDoListViewModel);
+            }
+
+            var taskModel = mapper.Map<TaskModel>(taskInputViewModel);
+            taskRepository.Update(taskModel);
+
+            return RedirectToAction("Index");
         }
 
         private ToDoListViewModel GetToDoListViewModel()

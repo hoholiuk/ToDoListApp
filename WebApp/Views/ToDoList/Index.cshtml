@@ -4,13 +4,16 @@
     var categoryMap = Model.CategoriesList.ToDictionary(c => c.Id, c => c.Name);
     var currentTasks = Model.TasksList.Where(t => !t.IsCompleted);
     var completedTasks = Model.TasksList.Where(t => t.IsCompleted);
+    var formAction = Model.TaskInputViewModel.Id != null ? "Update" : "Index";
 }
 
-<form method="post" asp-action="Index" class="d-flex flex-column justify-content-center align-items-center mb-4 pb-2">
+<form method="post" asp-action="@formAction" class="d-flex flex-column justify-content-center align-items-center mb-4 pb-2">
     <div class="col-6 mt-4">
-        <div class="form-outline">
-            <span asp-validation-for="TaskInputViewModel.Title" class="text-danger"></span>
+        <span asp-validation-for="TaskInputViewModel.Title" class="text-danger"></span>
+        <div class="form-outline d-flex flex-row gap-2">
+            <input type="hidden" asp-for="TaskInputViewModel.Id" value="@Model.TaskInputViewModel.Id" />
             <input type="text" asp-for="TaskInputViewModel.Title" id="form1" class="form-control" placeholder="Enter a task here" />
+            <input type="submit" class="form-control w-auto btn btn-success" value="Add">
         </div>
     </div>
     <div class="col-6 row justify-content-around">
@@ -65,7 +68,7 @@
                         @item.DueDate?.ToString("dd.MM.yyyy")
                     </td>
                     <td class="col-1">
-                        <a asp-action="Update" asp-route-id="@item.Id" class=""><img src="~/img/pencil.png" /></a>
+                        <a asp-action="GetDataForUpdate" asp-route-id="@item.Id" class=""><img src="~/img/pencil.png" /></a>
                         <a asp-action="Delete" asp-route-id="@item.Id" class="ms-2"><img src="~/img/bin.png" /></a>
                     </td>
                 </tr>

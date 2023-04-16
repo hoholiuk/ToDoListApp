@@ -7,7 +7,7 @@ namespace MSQL.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
-        private string connectionString = "Data Source=GBVPC; Initial Catalog=ToDoList; Integrated Security=True; TrustServerCertificate=True";
+        private string connectionString = "Data Source=HBV; Initial Catalog=ToDoList; Integrated Security=True; TrustServerCertificate=True";
 
         public TaskModel GetById(int id)
         {
@@ -45,6 +45,22 @@ namespace MSQL.Repositories
             string query = @"
                 INSERT INTO Tasks (Title, DueDate, CategoryId)
                 VALUES (@Title, @DueDate, @CategoryId)
+            ";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                return connection.Execute(query, task);
+            }
+        }
+
+        public int Update(TaskModel task)
+        {
+            string query = @"
+                UPDATE Tasks
+                SET Title = @Title,
+                DueDate = @DueDate,
+                CategoryId = @CategoryId
+                WHERE Id = @Id
             ";
 
             using (var connection = new SqlConnection(connectionString))
