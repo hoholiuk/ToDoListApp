@@ -2,12 +2,18 @@
 using Microsoft.Data.SqlClient;
 using BusinessLogic.Models;
 using BusinessLogic.Repositories;
+using Microsoft.Extensions.Configuration;
 
 namespace MSQL.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
-        private string connectionString = "Data Source=HBV; Initial Catalog=ToDoList; Integrated Security=True; TrustServerCertificate=True";
+        private string connectionString { get; set; }
+
+        public TaskRepository(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("MSQLConnection");
+        }
 
         public TaskModel GetById(int id)
         {

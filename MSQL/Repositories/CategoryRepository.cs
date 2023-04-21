@@ -2,12 +2,18 @@
 using Microsoft.Data.SqlClient;
 using BusinessLogic.Models;
 using BusinessLogic.Repositories;
+using Microsoft.Extensions.Configuration;
 
 namespace MSQL.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private string connectionString = "Data Source=HBV; Initial Catalog=ToDoList; Integrated Security=True; TrustServerCertificate=True";
+        private string connectionString { get; set; }
+
+        public CategoryRepository(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("MSQLConnection");
+        }
 
         public IEnumerable<CategoryModel> GetCategoriesList()
         {
