@@ -6,8 +6,13 @@
 }
 
 <form method="post" asp-action="Index" class="d-flex flex-column justify-content-center align-items-center mb-4">
-    <span asp-validation-for="CategoryInputViewModel.Name" class="text-danger"></span>
-    <input type="text" asp-for="CategoryInputViewModel.Name" class="form-control w-50 mt-4" placeholder="Enter a category name here" />
+    <div class="col-6 mt-4">
+        <span asp-validation-for="CategoryInputViewModel.Name" class="text-danger"></span>
+        <div class="d-flex flex-row gap-2">
+            <input type="text" asp-for="CategoryInputViewModel.Name" class="form-control w-100" placeholder="Enter a category name here" />
+            <input type="submit" class="form-control w-auto btn btn-success" value="Add">
+        </div>
+    </div>
 </form>
 
 @if (categoriesList.Count() > 0)

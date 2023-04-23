@@ -14,13 +14,14 @@ namespace WebApp.Controllers
         private readonly ITaskRepository taskRepository;
         private readonly ICategoryRepository categoryRepository;
 
-        public ToDoListController(IMapper mapper, ITaskRepository taskRepository, ICategoryRepository categoryRepository)
+        public ToDoListController(IMapper mapper, IEnumerable<ITaskRepository> taskRepository, IEnumerable<ICategoryRepository> categoryRepository)
         {
             this.mapper = mapper;
-            this.taskRepository = taskRepository;
-            this.categoryRepository = categoryRepository;
+            this.taskRepository = taskRepository.FirstOrDefault(r => r.RepositoryType == CurrentRepository.repositoryType);
+            this.categoryRepository = categoryRepository.FirstOrDefault(r => r.RepositoryType == CurrentRepository.repositoryType);
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View(GetToDoListViewModel());
@@ -91,6 +92,13 @@ namespace WebApp.Controllers
             var taskModel = mapper.Map<TaskModel>(taskInputViewModel);
             taskRepository.Update(taskModel);
 
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult ChangeRepository(RepositoryType repository)
+        {
+            CurrentRepository.ChangeRepositoryType(repository);
             return RedirectToAction("Index");
         }
 

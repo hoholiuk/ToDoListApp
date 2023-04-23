@@ -8,6 +8,7 @@ namespace MSQL.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
+        public RepositoryType RepositoryType { get => RepositoryType.SQL; }
         private string connectionString { get; set; }
 
         public CategoryRepository(IConfiguration configuration)
@@ -23,7 +24,7 @@ namespace MSQL.Repositories
             }
         }
 
-        public int Create(CategoryModel category)
+        public void Create(CategoryModel category)
         {
             string query = @"
                 INSERT INTO Categories (Name)
@@ -32,11 +33,11 @@ namespace MSQL.Repositories
 
             using (var connection = new SqlConnection(connectionString))
             {
-                return connection.Execute(query, category);
+                connection.Execute(query, category);
             }
         }
 
-        public int Delete(int id)
+        public void Delete(int id)
         {
             string query = @"
                 UPDATE Tasks
@@ -49,7 +50,7 @@ namespace MSQL.Repositories
 
             using (var connection = new SqlConnection(connectionString))
             {
-                return connection.Execute(query, new { Id = id });
+                connection.Execute(query, new { Id = id });
             }
         }
     }

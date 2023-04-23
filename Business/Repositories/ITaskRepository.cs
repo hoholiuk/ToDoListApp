@@ -4,11 +4,18 @@ namespace BusinessLogic.Repositories
 {
     public interface ITaskRepository
     {
+        RepositoryType RepositoryType { get; }
+
         IEnumerable<TaskModel> GetTasksList();
+
         TaskModel GetById(int id);
-        int Create(TaskModel task);
-        int Update(TaskModel task);
-        int Complete(int id);
-        int Delete(int id);
+
+        void Create(TaskModel task);
+
+        void Update(TaskModel task);
+
+        void Complete(int id);
+
+        void Delete(int id);
     }
 }

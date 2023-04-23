@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Business\BusinessLogic.csproj" />
     <ProjectReference Include="..\MSQL\MSQL.csproj" />
+    <ProjectReference Include="..\XML\XML.csproj" />
   </ItemGroup>
 
 </Project>

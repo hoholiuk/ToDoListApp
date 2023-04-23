@@ -13,6 +13,21 @@
             <div class="container d-flex justify-content-center">
                 <a class="fs-1 logo text-decoration-none text-black my-2" asp-controller="ToDoList" asp-action="Index">ToDoList</a>
             </div>
+            <form asp-controller="ToDoList" asp-action="ChangeRepository" method="post" class="d-flex justify-content-center mb-3 gap-2">
+                <select name="repository" class="form-select w-auto">
+                    @foreach (RepositoryType repository in (RepositoryType[])Enum.GetValues(typeof(RepositoryType)))
+                    {
+                        if (CurrentRepository.repositoryType == repository)
+                        {
+                            <option value="@repository" selected>@repository</option>
+                        } else
+                        {
+                            <option value="@repository">@repository</option>
+                        }
+                    }
+                </select>
+                <input type="submit" value="Change" class="btn btn-success" />
+            </form>
         </div>
     </header>
     <div class="container">

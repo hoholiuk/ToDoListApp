@@ -4,8 +4,12 @@ namespace BusinessLogic.Repositories
 {
     public interface ICategoryRepository
     {
+        RepositoryType RepositoryType { get; }
+
         IEnumerable<CategoryModel> GetCategoriesList();
-        int Create(CategoryModel category);
-        int Delete(int id);
+
+        void Create(CategoryModel category);
+
+        void Delete(int id);
     }
 }

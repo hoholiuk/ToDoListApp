@@ -12,12 +12,13 @@ namespace WebApp.Controllers
         private readonly IMapper mapper;
         private readonly ICategoryRepository categoryRepository;
 
-        public CategoryController(IMapper mapper, ICategoryRepository categoryRepository)
+        public CategoryController(IMapper mapper, IEnumerable<ICategoryRepository> categoryRepository)
         {
             this.mapper = mapper;
-            this.categoryRepository = categoryRepository;
+            this.categoryRepository = categoryRepository.FirstOrDefault(r => r.RepositoryType == CurrentRepository.repositoryType);
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View(GetCategoryViewModel());

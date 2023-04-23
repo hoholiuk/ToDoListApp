@@ -8,6 +8,7 @@ namespace MSQL.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
+        public RepositoryType RepositoryType { get => RepositoryType.SQL; }
         private string connectionString { get; set; }
 
         public TaskRepository(IConfiguration configuration)
@@ -46,7 +47,7 @@ namespace MSQL.Repositories
             }
         }
 
-        public int Create(TaskModel task)
+        public void Create(TaskModel task)
         {
             string query = @"
                 INSERT INTO Tasks (Title, DueDate, CategoryId)
@@ -55,11 +56,11 @@ namespace MSQL.Repositories
 
             using (var connection = new SqlConnection(connectionString))
             {
-                return connection.Execute(query, task);
+                connection.Execute(query, task);
             }
         }
 
-        public int Update(TaskModel task)
+        public void Update(TaskModel task)
         {
             string query = @"
                 UPDATE Tasks
@@ -71,11 +72,11 @@ namespace MSQL.Repositories
 
             using (var connection = new SqlConnection(connectionString))
             {
-                return connection.Execute(query, task);
+                connection.Execute(query, task);
             }
         }
 
-        public int Complete(int id)
+        public void Complete(int id)
         {
             string query = @"
                 UPDATE Tasks
@@ -85,11 +86,11 @@ namespace MSQL.Repositories
 
             using (var connection = new SqlConnection(connectionString))
             {
-                return connection.Execute(query, new { Id = id });
+                connection.Execute(query, new { Id = id });
             }
         }
 
-        public int Delete(int id)
+        public void Delete(int id)
         {
             string query = @"
                 DELETE Tasks
@@ -98,7 +99,7 @@ namespace MSQL.Repositories
 
             using (var connection = new SqlConnection(connectionString))
             {
-                return connection.Execute(query, new { Id = id });
+                connection.Execute(query, new { Id = id });
             }
         }
     }
