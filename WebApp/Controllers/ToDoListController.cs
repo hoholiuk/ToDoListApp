@@ -1,24 +1,25 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using BusinessLogic.Models;
-using WebApp.ViewModels.Task;
-using WebApp.ViewModels.Category;
-using WebApp.ViewModels;
 using BusinessLogic.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using WebApp.Services;
+using WebApp.ViewModels;
+using WebApp.ViewModels.Category;
+using WebApp.ViewModels.Task;
 
 namespace WebApp.Controllers
 {
     public class ToDoListController : Controller
     {
-        private readonly IMapper mapper;
-        private readonly ITaskRepository taskRepository;
-        private readonly ICategoryRepository categoryRepository;
+        private readonly IMapper _mapper;
+        private ITaskRepository _taskRepository { get => _repositorySwitcher.GetTaskRepository(Request); }
+        private ICategoryRepository _categoryRepository { get => _repositorySwitcher.GetCategoryRepository(Request); }
+        private readonly RepositorySwitcher _repositorySwitcher;
 
-        public ToDoListController(IMapper mapper, IEnumerable<ITaskRepository> taskRepository, IEnumerable<ICategoryRepository> categoryRepository)
+        public ToDoListController(IMapper mapper, IEnumerable<ITaskRepository> taskRepositories, IEnumerable<ICategoryRepository> categoryRepositories)
         {
-            this.mapper = mapper;
-            this.taskRepository = taskRepository.FirstOrDefault(r => r.RepositoryType == CurrentRepository.repositoryType);
-            this.categoryRepository = categoryRepository.FirstOrDefault(r => r.RepositoryType == CurrentRepository.repositoryType);
+            _mapper = mapper;
+            _repositorySwitcher = new RepositorySwitcher(taskRepositories, categoryRepositories);
         }
 
         [HttpGet]
@@ -35,8 +36,8 @@ namespace WebApp.Controllers
                 return View(GetToDoListViewModel());
             }
             
-            var taskModel = mapper.Map<TaskModel>(taskInputViewModel);
-            taskRepository.Create(taskModel);
+            var taskModel = _mapper.Map<TaskModel>(taskInputViewModel);
+            _taskRepository.Create(taskModel);
 
             return RedirectToAction("Index");
         }
@@ -44,21 +45,21 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Complete(int id)
         {
-            taskRepository.Complete(id);
+            _taskRepository.Complete(id);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            taskRepository.Delete(id);
+            _taskRepository.Delete(id);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult GetDataForUpdate(int id)
         {
-            TaskModel task = taskRepository.GetById(id);
+            TaskModel task = _taskRepository.GetById(id);
 
             if(task == null)
             {
@@ -89,8 +90,8 @@ namespace WebApp.Controllers
                 return View("Index", toDoListViewModel);
             }
 
-            var taskModel = mapper.Map<TaskModel>(taskInputViewModel);
-            taskRepository.Update(taskModel);
+            var taskModel = _mapper.Map<TaskModel>(taskInputViewModel);
+            _taskRepository.Update(taskModel);
 
             return RedirectToAction("Index");
         }
@@ -98,19 +99,19 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult ChangeRepository(RepositoryType repository)
         {
-            CurrentRepository.ChangeRepositoryType(repository);
+            Response.Cookies.Append("repositoryType", repository.ToString());
             return RedirectToAction("Index");
         }
 
         private ToDoListViewModel GetToDoListViewModel()
         {
-            IEnumerable<TaskModel> tasksList = taskRepository.GetTasksList();
-            IEnumerable<CategoryModel> categoriesList = categoryRepository.GetCategoriesList();
+            IEnumerable<TaskModel> tasksList = _taskRepository.GetTasksList();
+            IEnumerable<CategoryModel> categoriesList = _categoryRepository.GetCategoriesList();
 
             return new ToDoListViewModel()
             {
-                TasksList = mapper.Map<List<TaskItemViewModel>>(tasksList),
-                CategoriesList = mapper.Map<List<CategoryItemViewModel>>(categoriesList)
+                TasksList = _mapper.Map<List<TaskItemViewModel>>(tasksList),
+                CategoriesList = _mapper.Map<List<CategoryItemViewModel>>(categoriesList)
             };
         }
     }

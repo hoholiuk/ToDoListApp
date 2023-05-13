@@ -15,12 +15,15 @@
             </div>
             <form asp-controller="ToDoList" asp-action="ChangeRepository" method="post" class="d-flex justify-content-center mb-3 gap-2">
                 <select name="repository" class="form-select w-auto">
-                    @foreach (RepositoryType repository in (RepositoryType[])Enum.GetValues(typeof(RepositoryType)))
+                    @{ var currentRepository = ViewContext.HttpContext.Request.Cookies["repositoryType"]; }
+
+                    @foreach (RepositoryType repository in Enum.GetValues(typeof(RepositoryType)))
                     {
-                        if (CurrentRepository.repositoryType == repository)
+                        if (currentRepository == repository.ToString())
                         {
                             <option value="@repository" selected>@repository</option>
-                        } else
+                        }
+                        else
                         {
                             <option value="@repository">@repository</option>
                         }
