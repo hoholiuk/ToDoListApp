@@ -6,13 +6,13 @@ namespace BusinessLogic.Repositories
     {
         RepositoryType RepositoryType { get; }
 
-        IEnumerable<TaskModel> GetTasksList();
+        IEnumerable<TaskModel> GetAllTasks();
 
         TaskModel GetById(int id);
 
-        void Create(TaskModel task);
+        TaskModel Create(TaskModel task);
 
-        void Update(TaskModel task);
+        TaskModel Update(TaskModel task);
 
         void Complete(int id);
 

@@ -49,7 +49,7 @@ namespace WebApp.Controllers
 
         private CategoryViewModel GetCategoryViewModel()
         {
-            IEnumerable<CategoryModel> categoriesList = _categoryRepository.GetCategoriesList();
+            IEnumerable<CategoryModel> categoriesList = _categoryRepository.GetAllCategories();
 
             return new CategoryViewModel()
             {

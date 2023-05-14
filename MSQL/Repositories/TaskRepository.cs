@@ -9,11 +9,11 @@ namespace MSQL.Repositories
     public class TaskRepository : ITaskRepository
     {
         public RepositoryType RepositoryType { get => RepositoryType.SQL; }
-        private string connectionString { get; set; }
+        private string _connectionString { get; set; }
 
         public TaskRepository(IConfiguration configuration)
         {
-            connectionString = configuration.GetConnectionString("MSQLConnection");
+            _connectionString = configuration.GetConnectionString("MSQLConnection");
         }
 
         public TaskModel GetById(int id)
@@ -24,13 +24,13 @@ namespace MSQL.Repositories
                 WHERE Id = @Id
             ";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
                 return connection.QuerySingleOrDefault<TaskModel>(query, new { Id = id });
             }
         }
 
-        public IEnumerable<TaskModel> GetTasksList()
+        public IEnumerable<TaskModel> GetAllTasks()
         {
             string query = @"
                 SELECT * FROM Tasks
@@ -41,26 +41,29 @@ namespace MSQL.Repositories
 	                DueDate
             ";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
                 return connection.Query<TaskModel>(query).ToList();
             }
         }
 
-        public void Create(TaskModel task)
+        public TaskModel Create(TaskModel task)
         {
             string query = @"
                 INSERT INTO Tasks (Title, DueDate, CategoryId)
                 VALUES (@Title, @DueDate, @CategoryId)
+                SELECT SCOPE_IDENTITY()
             ";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
-                connection.Execute(query, task);
+                var id = connection.ExecuteScalar<int>(query, task);
+                task.Id = id;
+                return task;
             }
         }
 
-        public void Update(TaskModel task)
+        public TaskModel Update(TaskModel task)
         {
             string query = @"
                 UPDATE Tasks
@@ -70,9 +73,10 @@ namespace MSQL.Repositories
                 WHERE Id = @Id
             ";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Execute(query, task);
+                return task;
             }
         }
 
@@ -84,7 +88,7 @@ namespace MSQL.Repositories
                 WHERE Id = @Id
             ";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Execute(query, new { Id = id });
             }
@@ -97,7 +101,7 @@ namespace MSQL.Repositories
                 WHERE Id = @Id
             ";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Execute(query, new { Id = id });
             }

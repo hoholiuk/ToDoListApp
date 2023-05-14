@@ -6,9 +6,11 @@ namespace BusinessLogic.Repositories
     {
         RepositoryType RepositoryType { get; }
 
-        IEnumerable<CategoryModel> GetCategoriesList();
+        IEnumerable<CategoryModel> GetAllCategories();
 
-        void Create(CategoryModel category);
+        CategoryModel GetById(int id);
+
+        CategoryModel Create(CategoryModel category);
 
         void Delete(int id);
     }

@@ -8,31 +8,24 @@ namespace XML.Repositories
     public class TaskRepository : ITaskRepository
     {
         public RepositoryType RepositoryType { get => RepositoryType.XML; }
-        private string tasksFilePath;
-
-        private XmlSerializer xmlSerializer;
+        private XmlSerializer _xmlSerializer;
+        private string _tasksFilePath;
 
         public TaskRepository(IConfiguration configuration)
         {
-            this.tasksFilePath = configuration.GetSection("XMLStorages")["TaskStorage"];
-            this.xmlSerializer = new XmlSerializer(typeof(List<TaskModel>));
+            _tasksFilePath = configuration.GetSection("XMLStorages")["TaskStorage"];
+            _xmlSerializer = new XmlSerializer(typeof(List<TaskModel>));
         }
 
-        public TaskModel GetById(int id)
-        {
-            List<TaskModel> tasks = (List<TaskModel>)GetTasksList();
-            return tasks.FirstOrDefault(t => t.Id == id);
-        }
-
-        public IEnumerable<TaskModel> GetTasksList()
+        public IEnumerable<TaskModel> GetAllTasks()
         {
             List<TaskModel> tasks;
 
-            using (FileStream fs = new FileStream(tasksFilePath, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(_tasksFilePath, FileMode.OpenOrCreate))
             {
                 try
                 {
-                    tasks = (List<TaskModel>)xmlSerializer.Deserialize(fs);
+                    tasks = (List<TaskModel>)_xmlSerializer.Deserialize(fs);
                 }
                 catch (Exception ex)
                 {
@@ -44,50 +37,58 @@ namespace XML.Repositories
             return GetSortedTasksList(tasks);
         }
 
+        public TaskModel GetById(int id)
+        {
+            List<TaskModel> tasks = GetAllTasks().ToList();
+            return tasks.FirstOrDefault(t => t.Id == id);
+        }
+
         public void Complete(int id)
         {
-            List<TaskModel> tasks = (List<TaskModel>)GetTasksList();
+            List<TaskModel> tasks = GetAllTasks().ToList();
 
             var task = tasks.FirstOrDefault(t => t.Id == id);
 
             task.IsCompleted = !task.IsCompleted;
 
-            using (FileStream fs = new FileStream(tasksFilePath, FileMode.Truncate))
+            using (FileStream fs = new FileStream(_tasksFilePath, FileMode.Truncate))
             {
-                xmlSerializer.Serialize(fs, tasks);
+                _xmlSerializer.Serialize(fs, tasks);
             }
         }
 
-        public void Create(TaskModel task)
+        public TaskModel Create(TaskModel task)
         {
-            List<TaskModel> tasks = (List<TaskModel>)GetTasksList();
+            List<TaskModel> tasks = GetAllTasks().ToList();
 
             if (tasks.Count > 0)
                 task.Id = tasks.Max(t => t.Id) + 1;
 
             tasks.Add(task);
 
-            using (FileStream fs = new FileStream(tasksFilePath, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(_tasksFilePath, FileMode.OpenOrCreate))
             {
-                xmlSerializer.Serialize(fs, tasks);
+                _xmlSerializer.Serialize(fs, tasks);
             }
+
+            return task;
         }
 
         public void Delete(int id)
         {
-            List<TaskModel> tasks = (List<TaskModel>)GetTasksList();
+            List<TaskModel> tasks = GetAllTasks().ToList();
 
             tasks.RemoveAll(c => c.Id == id);
 
-            using (FileStream fs = new FileStream(tasksFilePath, FileMode.Truncate))
+            using (FileStream fs = new FileStream(_tasksFilePath, FileMode.Truncate))
             {
-                xmlSerializer.Serialize(fs, tasks);
+                _xmlSerializer.Serialize(fs, tasks);
             }
         }
 
-        public void Update(TaskModel updatedTask)
+        public TaskModel Update(TaskModel updatedTask)
         {
-            List<TaskModel> tasks = (List<TaskModel>)GetTasksList();
+            List<TaskModel> tasks = GetAllTasks().ToList();
 
             var task = tasks.FirstOrDefault(t => t.Id == updatedTask.Id);
 
@@ -96,10 +97,12 @@ namespace XML.Repositories
             task.DueDate = updatedTask.DueDate;
             task.CategoryId = updatedTask.CategoryId;
 
-            using (FileStream fs = new FileStream(tasksFilePath, FileMode.Truncate))
+            using (FileStream fs = new FileStream(_tasksFilePath, FileMode.Truncate))
             {
-                xmlSerializer.Serialize(fs, tasks);
+                _xmlSerializer.Serialize(fs, tasks);
             }
+
+            return updatedTask;
         }
 
         private IEnumerable<TaskModel> GetSortedTasksList(IEnumerable<TaskModel> tasks)

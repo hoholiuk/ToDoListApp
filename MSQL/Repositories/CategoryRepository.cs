@@ -9,31 +9,48 @@ namespace MSQL.Repositories
     public class CategoryRepository : ICategoryRepository
     {
         public RepositoryType RepositoryType { get => RepositoryType.SQL; }
-        private string connectionString { get; set; }
+        private string _connectionString { get; set; }
 
         public CategoryRepository(IConfiguration configuration)
         {
-            connectionString = configuration.GetConnectionString("MSQLConnection");
+            _connectionString = configuration.GetConnectionString("MSQLConnection");
         }
 
-        public IEnumerable<CategoryModel> GetCategoriesList()
+        public IEnumerable<CategoryModel> GetAllCategories()
         {
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
                 return connection.Query<CategoryModel>("SELECT * FROM Categories").ToList();
             }
         }
 
-        public void Create(CategoryModel category)
+        public CategoryModel GetById(int id)
+        {
+            string query = @"
+                SELECT *
+                FROM Categories
+                WHERE Id = @Id
+            ";
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                return connection.QuerySingleOrDefault<CategoryModel>(query, new { Id = id });
+            }
+        }
+
+        public CategoryModel Create(CategoryModel category)
         {
             string query = @"
                 INSERT INTO Categories (Name)
                 VALUES (@Name)
+                SELECT SCOPE_IDENTITY()
             ";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
-                connection.Execute(query, category);
+                var id = connection.ExecuteScalar<int>(query, category);
+                category.Id = id;
+                return category;
             }
         }
 
@@ -48,7 +65,7 @@ namespace MSQL.Repositories
                 WHERE Id = @Id
             ";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Execute(query, new { Id = id });
             }

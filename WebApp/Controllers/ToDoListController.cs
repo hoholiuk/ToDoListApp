@@ -105,8 +105,8 @@ namespace WebApp.Controllers
 
         private ToDoListViewModel GetToDoListViewModel()
         {
-            IEnumerable<TaskModel> tasksList = _taskRepository.GetTasksList();
-            IEnumerable<CategoryModel> categoriesList = _categoryRepository.GetCategoriesList();
+            IEnumerable<TaskModel> tasksList = _taskRepository.GetAllTasks();
+            IEnumerable<CategoryModel> categoriesList = _categoryRepository.GetAllCategories();
 
             return new ToDoListViewModel()
             {
