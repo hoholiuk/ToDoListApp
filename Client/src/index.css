@@ -1,0 +1,19 @@
+* {
+  font-size: 18px;
+}
+
+td {
+  vertical-align: middle;
+}
+
+.actions, input[type='checkbox'] {
+  transform: scale(1.5);
+}
+
+.actions:hover, input[type='checkbox'] {
+  cursor: pointer;
+}
+
+.completed > td {
+  background-color: rgba(0, 0, 0, 0.06);
+}
