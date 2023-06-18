@@ -1,6 +1,7 @@
 import React, {ReactElement, useState} from "react";
 import {useDispatch} from "react-redux";
-import {addCategory} from "../store/categories";
+import {categoriesActions} from "../store/actions";
+import CategoryInput from "../models/categoryInput";
 
 interface CategoryInputFormProps {
     setCategoryFormVisibility: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,8 +24,11 @@ const CategoryInputForm: React.FC<CategoryInputFormProps> = ({setCategoryFormVis
             return;
         }
 
-        dispatch(addCategory({name}));
+        const category: CategoryInput = {
+            name: name
+        }
 
+        dispatch(categoriesActions.createCategory(category));
         setErrorAlert("");
         setName("");
     };

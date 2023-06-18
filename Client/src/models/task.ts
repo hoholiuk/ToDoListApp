@@ -2,7 +2,7 @@ interface Task {
     id: number,
     title: string,
     isCompleted: boolean,
-    dueDate: Date | null,
+    dueDate: string | null,
     categoryId: number | null,
 }
 

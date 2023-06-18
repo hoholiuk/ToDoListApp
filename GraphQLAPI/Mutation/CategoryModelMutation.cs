@@ -21,13 +21,13 @@ namespace GraphQLAPI.Mutation
                     return categoryRepository.Create(context.GetArgument<CategoryModel>("category"));
                 });
 
-            Field<BooleanGraphType>("deleteCategory",
+            Field<IntGraphType>("deleteCategory",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "id" }),
                 resolve: context =>
                 {
                     var categoryId = context.GetArgument<int>("id");
                     categoryRepository.Delete(categoryId);
-                    return true;
+                    return categoryId;
                 });
         }
     }

@@ -8,6 +8,17 @@ using GraphQL.Types;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DefaultPolicy", builder =>
+    {
+        builder.AllowAnyHeader()
+               .WithMethods("POST")
+               .WithOrigins("http://localhost:3000")
+               .AllowCredentials();
+    });
+});
+
 builder.Services.AddScoped<ITaskRepository, MSQL.Repositories.TaskRepository>();
 builder.Services.AddScoped<ICategoryRepository, MSQL.Repositories.CategoryRepository>();
 builder.Services.AddScoped<ITaskRepository, XML.Repositories.TaskRepository>();
@@ -36,6 +47,8 @@ builder.Services.AddGraphQL(options =>
 }).AddSystemTextJson();
 
 var app = builder.Build();
+
+app.UseCors("DefaultPolicy");
 
 app.UseGraphQL<ISchema>();
 

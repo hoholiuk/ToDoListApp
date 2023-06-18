@@ -1,5 +1,5 @@
 import React, {FC, ReactElement, useState} from 'react';
-import Task from "./types/task";
+import Task from "./models/task";
 import Header from "./components/Header";
 import CategoryInputForm from "./components/CategoryInputForm";
 import CategoriesTable from "./components/CategoriesTable";

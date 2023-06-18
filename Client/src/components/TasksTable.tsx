@@ -1,14 +1,14 @@
 import React, {FC, ReactElement, useEffect, useState} from "react";
 import {useSelector} from 'react-redux';
 import TaskRow from "./TaskRow";
-import Task from "../types/task";
+import Task from "../models/task";
 
 interface TasksTableProps {
     setSelectedTask: React.Dispatch<React.SetStateAction<Task | null>>;
 }
 
 const TasksTable: FC<TasksTableProps> = ({setSelectedTask}): ReactElement => {
-    const tasks = useSelector((state: { tasks: Task[] }) => state.tasks);
+    const tasks: Task [] = useSelector((state: any) => state.tasks['tasks']);
     const [numberUncompletedTasks, setNumberUncompletedTasks] = useState<number>(0);
 
     useEffect(() => {

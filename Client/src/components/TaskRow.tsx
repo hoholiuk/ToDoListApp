@@ -1,11 +1,11 @@
 import React, {FC, ReactElement} from "react";
 import {TbEdit} from "react-icons/tb";
 import {BsTrash} from "react-icons/bs";
-import {completeTask, removeTask} from "../store/tasks";
 import {useDispatch, useSelector} from "react-redux";
-import Task from "../types/task";
-import Category from "../types/category";
-import {convertDateToString} from "../convertors/dateToStringConverter";
+import Task from "../models/task";
+import Category from "../models/category";
+import {convertDateTimeToDate} from "../helpers/dateTimeToDateConverter";
+import {tasksActions} from "../store/actions";
 
 interface TaskRowProps {
     task: Task;
@@ -14,15 +14,15 @@ interface TaskRowProps {
 
 const TaskRow: FC<TaskRowProps> = ({task, setSelectedTask}): ReactElement => {
     const dispatch = useDispatch();
-    const categories = useSelector((state: { categories: Category[] }) => state.categories);
+    const categories: Category[] = useSelector((state: any) => state.categories['categories']);
     const foundCategory: Category | undefined = categories.find((category: Category) => category.id === task.categoryId);
 
     const handleCheckboxClick = () => {
-        dispatch(completeTask({id: task.id}));
+        dispatch(tasksActions.completeTask(task.id));
     };
 
     const handleDeleteButtonClick = () => {
-        dispatch(removeTask({id: task.id}));
+        dispatch(tasksActions.removeTask(task.id));
     };
 
     const handleEditButtonClick = () => {
@@ -42,7 +42,7 @@ const TaskRow: FC<TaskRowProps> = ({task, setSelectedTask}): ReactElement => {
                 {task.title}
             </td>
             <td className="col-2">{foundCategory ? foundCategory.name : ""}</td>
-            <td className="col-2">{task.dueDate ? convertDateToString(task.dueDate) : ""}</td>
+            <td className="col-2">{task.dueDate ? convertDateTimeToDate(task.dueDate) : ""}</td>
             <td className="col-1 px-3">
                 <div className={"d-flex justify-content" + (!task.isCompleted ? "-between" : "-end")}>
                     {!task.isCompleted && <TbEdit className="actions" onClick={handleEditButtonClick}/>}

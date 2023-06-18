@@ -1,10 +1,10 @@
 import React, {FC, ReactElement, useState, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {addTask, updateTask} from "../store/tasks";
-import Category from "../types/category";
-import Task from "../types/task";
-import {convertStringToDate} from "../convertors/stringToDateConverter"
-import {convertDateToString} from "../convertors/dateToStringConverter"
+import Category from "../models/category";
+import Task from "../models/task";
+import {convertDateTimeToDate} from "../helpers/dateTimeToDateConverter";
+import {tasksActions} from "../store/actions";
+import TaskInput from "../models/taskInput";
 
 interface TaskInputFormProps {
     setCategoryFormVisibility: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,9 +14,9 @@ interface TaskInputFormProps {
 
 const TaskInputForm: FC<TaskInputFormProps> = ({setCategoryFormVisibility, selectedTask, setSelectedTask}): ReactElement => {
     const dispatch = useDispatch();
-    const categories = useSelector((state: { categories: Category[] }) => state.categories);
+    const categories: Category[] = useSelector((state: any) => state.categories['categories']);
     const [title, setTitle] = useState<string>("");
-    const [dueDate, setDueDate] = useState<Date | null>(null);
+    const [dueDate, setDueDate] = useState<string | null>(null);
     const [categoryId, setCategoryId] = useState<number | null>(null);
     const [buttonValue, setButtonValue] = useState<string>("Add");
     const [buttonColor, setButtonColor] = useState<string>("btn-success");
@@ -25,7 +25,7 @@ const TaskInputForm: FC<TaskInputFormProps> = ({setCategoryFormVisibility, selec
     useEffect(() => {
         if (selectedTask) {
             setTitle(selectedTask.title);
-            setDueDate(selectedTask.dueDate);
+            setDueDate(convertDateTimeToDate(selectedTask.dueDate));
             setCategoryId(selectedTask.categoryId);
             setButtonValue("Save");
             setButtonColor("btn-warning");
@@ -47,17 +47,22 @@ const TaskInputForm: FC<TaskInputFormProps> = ({setCategoryFormVisibility, selec
         }
 
         if (selectedTask) {
-            dispatch(
-                updateTask({
-                    ...selectedTask,
-                    title,
-                    dueDate,
-                    categoryId,
-                })
-            );
+            const task: Task = {
+                id: selectedTask.id,
+                title: title,
+                dueDate: dueDate,
+                isCompleted: false,
+                categoryId: categoryId
+            }
+            dispatch(tasksActions.updateTask(task));
             setSelectedTask(null);
         } else {
-            dispatch(addTask({title, dueDate, categoryId}));
+            const task: TaskInput = {
+                title: title,
+                dueDate: dueDate,
+                categoryId: categoryId
+            }
+            dispatch(tasksActions.createTask(task));
         }
 
         setTitle("");
@@ -116,9 +121,9 @@ const TaskInputForm: FC<TaskInputFormProps> = ({setCategoryFormVisibility, selec
                 </div>
                 <div className="col-5 mt-4 p-0">
                     <input
-                        value={dueDate ? convertDateToString(dueDate) : ""}
+                        value={dueDate ? dueDate : ""}
                         onChange={(event) => {
-                            setDueDate(event.target.value === "" ? null : convertStringToDate(event.target.value));
+                            setDueDate(event.target.value === "" ? null : event.target.value);
                         }}
                         type={"date"}
                         className="form-control"

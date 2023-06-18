@@ -28,22 +28,22 @@ namespace GraphQLAPI.Mutation
                     return taskRepository.Update(context.GetArgument<TaskModel>("task"));
                 });
 
-            Field<BooleanGraphType>("completeTask",
+            Field<IntGraphType>("completeTask",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "id" }),
                 resolve: context =>
                 {
                     var taskId = context.GetArgument<int>("id");
                     taskRepository.Complete(taskId);
-                    return true;
+                    return taskId;
                 });
 
-            Field<BooleanGraphType>("deleteTask",
+            Field<IntGraphType>("deleteTask",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "id" }),
                 resolve: context =>
                 {
                     var taskId = context.GetArgument<int>("id");
                     taskRepository.Delete(taskId);
-                    return true;
+                    return taskId;
                 });
         }
     }

@@ -1,10 +1,10 @@
 import React, {FC, ReactElement} from "react";
 import {useSelector} from "react-redux";
 import CategoryRow from "./CategoryRow";
-import Category from "../types/category";
+import Category from "../models/category";
 
 const CategoriesTable: FC = (): ReactElement => {
-    const categories = useSelector((state: { categories: Category[] }) => state.categories);
+    const categories: Category[] = useSelector((state: any) => state.categories['categories']);
 
     return (
         <>
