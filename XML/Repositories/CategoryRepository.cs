@@ -51,8 +51,7 @@ namespace XML.Repositories
         {
             List<CategoryModel> categories = GetAllCategories().ToList();
 
-            if (categories.Count > 0)
-                category.Id = categories.Max(t => t.Id) + 1;
+            category.Id = categories.Count > 0 ? (categories.Max(t => t.Id) + 1) : 1;
 
             categories.Add(category);
 

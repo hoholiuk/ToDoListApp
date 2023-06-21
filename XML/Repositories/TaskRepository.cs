@@ -61,8 +61,7 @@ namespace XML.Repositories
         {
             List<TaskModel> tasks = GetAllTasks().ToList();
 
-            if (tasks.Count > 0)
-                task.Id = tasks.Max(t => t.Id) + 1;
+            task.Id = tasks.Count > 0 ? (tasks.Max(t => t.Id) + 1) : 1;
 
             tasks.Add(task);
 

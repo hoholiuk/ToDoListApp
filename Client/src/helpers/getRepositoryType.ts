@@ -1,12 +1,12 @@
 import {getCookie} from "typescript-cookie";
-import {RepositoryTypes} from "../enums/repositoryTypes";
+import {RepositoryTypesEnum} from "../enums/repositoryTypes.enum";
 
 export const getRepositoryType = (): string => {
     const value = getCookie('repositoryType');
 
-    if (typeof value === 'string' && value in RepositoryTypes) {
+    if (typeof value === 'string' && value in RepositoryTypesEnum) {
         return value;
     } else {
-        return Object.values(RepositoryTypes)[0];
+        return Object.values(RepositoryTypesEnum)[0];
     }
 }

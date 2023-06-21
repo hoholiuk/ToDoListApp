@@ -6,7 +6,7 @@ import Task from "../../models/task";
 import {getTasksQuery, createTaskQuery, completeTaskQuery, updateTaskQuery, removeTaskQuery} from "./general/queries/taskQueries";
 import {fetchData} from "./general/fetchData";
 
-export const getTasksEpic: Epic<ReturnType<typeof tasksActions.getTasks>, any, RootState> = (action$, state$) => {
+export const getTasksEpic: Epic<ReturnType<typeof tasksActions.getTasks>, any, RootState> = (action$) => {
     return action$.pipe(
         ofType('GET_TASKS'),
         switchMap(action => from(fetchData(getTasksQuery()))),
@@ -17,7 +17,7 @@ export const getTasksEpic: Epic<ReturnType<typeof tasksActions.getTasks>, any, R
     );
 }
 
-export const addTaskEpic: Epic<ReturnType<typeof tasksActions.createTask>, any, RootState> = (action$, state$) => {
+export const addTaskEpic: Epic<ReturnType<typeof tasksActions.createTask>, any, RootState> = (action$) => {
     return action$.pipe(
         ofType('CREATE_TASK'),
         switchMap(action => from(fetchData(createTaskQuery(action.payload)))),
@@ -28,7 +28,7 @@ export const addTaskEpic: Epic<ReturnType<typeof tasksActions.createTask>, any, 
     );
 }
 
-export const completeTaskEpic: Epic<ReturnType<typeof tasksActions.completeTask>, any, RootState> = (action$, state$) => {
+export const completeTaskEpic: Epic<ReturnType<typeof tasksActions.completeTask>, any, RootState> = (action$) => {
     return action$.pipe(
         ofType('COMPLETE_TASK'),
         switchMap(action => from(fetchData(completeTaskQuery(action.payload)))),
@@ -39,7 +39,7 @@ export const completeTaskEpic: Epic<ReturnType<typeof tasksActions.completeTask>
     );
 }
 
-export const updateTaskEpic: Epic<ReturnType<typeof tasksActions.updateTask>, any, RootState> = (action$, state$) => {
+export const updateTaskEpic: Epic<ReturnType<typeof tasksActions.updateTask>, any, RootState> = (action$) => {
     return action$.pipe(
         ofType('UPDATE_TASK'),
         switchMap(action => from(fetchData(updateTaskQuery(action.payload)))),
@@ -50,7 +50,7 @@ export const updateTaskEpic: Epic<ReturnType<typeof tasksActions.updateTask>, an
     );
 }
 
-export const removeTaskEpic: Epic<ReturnType<typeof tasksActions.removeTask>, any, RootState> = (action$, state$) => {
+export const removeTaskEpic: Epic<ReturnType<typeof tasksActions.removeTask>, any, RootState> = (action$) => {
     return action$.pipe(
         ofType('REMOVE_TASK'),
         switchMap(action => from(fetchData(removeTaskQuery(action.payload)))),

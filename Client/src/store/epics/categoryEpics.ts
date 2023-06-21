@@ -6,7 +6,7 @@ import Category from "../../models/category";
 import {getCategoriesQuery, createCategoryQuery, removeCategoryQuery} from "./general/queries/categoryQueries";
 import {fetchData} from "./general/fetchData";
 
-export const getCategoriesEpic: Epic<ReturnType<typeof categoriesActions.getCategories>, any, RootState> = (action$, state$) => {
+export const getCategoriesEpic: Epic<ReturnType<typeof categoriesActions.getCategories>, any, RootState> = (action$) => {
     return action$.pipe(
         ofType('GET_CATEGORIES'),
         switchMap(action => from(fetchData(getCategoriesQuery()))),
@@ -17,7 +17,7 @@ export const getCategoriesEpic: Epic<ReturnType<typeof categoriesActions.getCate
     );
 }
 
-export const addCategoriesEpic: Epic<ReturnType<typeof categoriesActions.createCategory>, any, RootState> = (action$, state$) => {
+export const addCategoriesEpic: Epic<ReturnType<typeof categoriesActions.createCategory>, any, RootState> = (action$) => {
     return action$.pipe(
         ofType('CREATE_CATEGORY'),
         switchMap(action => from(fetchData(createCategoryQuery(action.payload)))),
@@ -28,7 +28,7 @@ export const addCategoriesEpic: Epic<ReturnType<typeof categoriesActions.createC
     );
 }
 
-export const removeCategoryEpic: Epic<ReturnType<typeof categoriesActions.removeCategory>, any, RootState> = (action$, state$) => {
+export const removeCategoryEpic: Epic<ReturnType<typeof categoriesActions.removeCategory>, any, RootState> = (action$) => {
     return action$.pipe(
         ofType('REMOVE_CATEGORY'),
         switchMap(action => from(fetchData(removeCategoryQuery(action.payload)))),

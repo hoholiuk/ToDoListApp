@@ -18,8 +18,7 @@ const rootReducer = combineReducers({
 const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(epicMiddleware),
-    devTools: true
+        getDefaultMiddleware().concat(epicMiddleware)
 });
 
 // @ts-ignore

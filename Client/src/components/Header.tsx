@@ -3,14 +3,14 @@ import {useDispatch} from "react-redux";
 import {categoriesActions, tasksActions} from "../store/actions";
 import {setCookie} from 'typescript-cookie';
 import {getRepositoryType} from "../helpers/getRepositoryType";
-import {RepositoryTypes} from "../enums/repositoryTypes";
+import {RepositoryTypesEnum} from "../enums/repositoryTypes.enum";
 
 const Header: FC = (): ReactElement => {
     const dispatch = useDispatch();
     const [repositoryType, setRepositoryType] = useState<string>(getRepositoryType());
 
     useEffect(() => {
-        setCookie('repositoryType', repositoryType, {expires: 7})
+        setCookie('repositoryType', repositoryType, {expires: 7});
         dispatch(tasksActions.getTasks());
         dispatch(categoriesActions.getCategories());
     }, [repositoryType, dispatch]);
@@ -26,7 +26,7 @@ const Header: FC = (): ReactElement => {
                         value={repositoryType}
                         onChange={(event) => setRepositoryType(event.target.value)}>
 
-                    {Object.values(RepositoryTypes).map((type) => (
+                    {Object.values(RepositoryTypesEnum).map((type) => (
                         <option key={type} value={type}>
                             {type}
                         </option>

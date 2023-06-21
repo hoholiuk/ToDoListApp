@@ -75,8 +75,5 @@ export const categoriesActions = {
 
 type ValueOf<T> = T[keyof T]
 
-export type TaskActionCreatorType = ValueOf<typeof tasksActions>
-export type TaskActionTypes = ReturnType<TaskActionCreatorType>
-
-export type CategoryActionCreatorType = ValueOf<typeof categoriesActions>
-export type CategoryActionTypes = ReturnType<CategoryActionCreatorType>
+export type TaskActionTypes = ReturnType<ValueOf<typeof tasksActions>>
+export type CategoryActionTypes = ReturnType<ValueOf<typeof categoriesActions>>
